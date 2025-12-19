@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      padding: 14px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Font card */
+    .font-card {
+      background: #e9ecef;
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .font-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .font-family {
+      font-size: 16px;
+      font-weight: 500;
+      color: #111;
+    }
+
+    .font-style {
+      font-size: 13px;
+      color: #555;
+    }
+
+    .copy-btn {
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    .copy-btn:hover {
+      opacity: 1;
+    }
+
+    /* Controls */
+    .control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 60px;
+      padding: 10px;
+      font-size: 13px;
+      border-radius: 8px;
+      border: 1px solid #d0d0d0;
+      resize: none;
+      font-family: inherit;
+    }
+
+    .spacer {
+      flex: 1;
+    }
+
+    /* CTA */
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 12px;
+      border: none;
+      background: #3f6fe5;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #355fd1;
+    }
+
+    /* Hidden copy input */
+    #copyInput {
+      position: absolute;
+      left: -9999px;
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body>
+<!-- cover image -->
+ <img
+  src="data:image/png;base64,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"
+  alt="Font Roulette"
+  style="
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  "
+/>
+
+
+  <!-- Font display card -->
+  <div class="font-card">
+    <div class="font-info">
+      <div class="font-family" id="fontFamily">Font Name</div>
+      <div class="font-style" id="fontStyle">Font Weight</div>
+    </div>
+
+    <!-- Copy icon (simple) -->
+    <div class="copy-btn" id="copyBtn">
+      📋
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <label class="control">
+    <input type="checkbox" id="excludeCommon" />
+    Exclude common fonts
+  </label>
+
+  <textarea
+    id="excludeList"
+    placeholder="Inter, Roboto, Poppins"
+    style="display:none;"
+  ></textarea>
+
+  <label class="control">
+    <input type="checkbox" id="lockStyle" />
+    Lock font style
+  </label>
+
+  <div class="spacer"></div>
+
+  <!-- CTA -->
+  <button id="randomBtn">Randomise Font</button>
+
+  <!-- Hidden input for safe copy -->
+  <input type="text" id="copyInput" />
+
+  <script>
+    var excludeCheckbox = document.getElementById("excludeCommon");
+    var excludeTextarea = document.getElementById("excludeList");
+    var fontFamilyEl = document.getElementById("fontFamily");
+    var fontStyleEl = document.getElementById("fontStyle");
+
+    excludeCheckbox.onchange = function () {
+  var expanded = excludeCheckbox.checked;
+
+  excludeTextarea.style.display = expanded ? "block" : "none";
+
+  parent.postMessage({
+    pluginMessage: {
+      type: "RESIZE_UI",
+      expanded: expanded
+    }
+  }, "*");
+};
+
+
+    document.getElementById("randomBtn").onclick = function () {
+      parent.postMessage({
+        pluginMessage: {
+          type: "RANDOM_FONT",
+          excludeCommon: excludeCheckbox.checked,
+          excludeList: excludeTextarea.value,
+          lockStyle: document.getElementById("lockStyle").checked
+        }
+      }, "*");
+    };
+
+    document.getElementById("copyBtn").onclick = function () {
+      var text = fontFamilyEl.innerText + " – " + fontStyleEl.innerText;
+      var input = document.getElementById("copyInput");
+      input.value = text;
+      input.select();
+      document.execCommand("copy");
+    };
+
+    onmessage = function (event) {
+      if (
+        event.data &&
+        event.data.pluginMessage &&
+        event.data.pluginMessage.fontName
+      ) {
+        var parts = event.data.pluginMessage.fontName.split(" – ");
+        fontFamilyEl.innerText = parts[0] || "—";
+        fontStyleEl.innerText = parts[1] || "";
+      }
+    };
+  </script>
+
+</body>
+</html>
